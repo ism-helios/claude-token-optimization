@@ -1,0 +1,83 @@
+<!--
+  Copy into a repo root as CLAUDE.md (or append to an existing one).
+  Claude Code reads it automatically at session start.
+
+  Fill in the [BRACKETED] parts for your project, delete what doesn't apply.
+  Keep it short — this file sits in the system prefix of every single turn, so
+  bloat here is re-read on every request. Under ~100 lines is a good target.
+-->
+
+# [PROJECT NAME]
+
+[One or two sentences: what this is, what stack.]
+
+## Commands
+
+Use these exact forms — the flags keep output out of context.
+
+```bash
+[npm run dev]                              # dev server
+[npm test -- --silent 2>&1 | tail -30]     # tests: trimmed output
+[npm run build --silent]                   # build
+[npm run lint -- --quiet]                  # lint
+[npx tsc --noEmit 2>&1 | head -30]         # typecheck
+```
+
+## Output discipline
+
+Command output persists in context and is re-read on every later turn in the
+session. A single untrimmed log is paid for hundreds of times.
+
+- Always trim: `| tail -30`, `| head -50`, `--silent`, `-q`, `--oneline`,
+  `--tail=50`
+- Large output → write to a file and grep it, don't pipe it through context:
+  `[npm test] > /tmp/out.log 2>&1; grep -E "FAIL|Error" /tmp/out.log | head -40`
+- Never `cat` a whole file to inspect it — use `sed -n 'START,ENDp'` or Read with
+  an offset
+- Never print a whole test run, build log, or `git log` when a slice answers the
+  question
+- Run genuinely noisy commands in a subagent and return only the conclusion
+
+## Session hygiene
+
+- One task per session. Tell me to `/clear` when a task finishes or I switch to
+  unrelated work.
+- Flag when context is getting large (~200K) and suggest `/compact` if we're
+  mid-task, `/clear` if we're not.
+- Never suggest changing model or effort mid-conversation — it invalidates the
+  prompt cache and re-bills the whole context. Say "finish, `/clear`, restart on
+  X" instead.
+- Don't re-read files already read this session; don't re-run a command whose
+  output is already above.
+
+## Model expectations
+
+Set before the session starts — this is a note for me, not something you change:
+
+| Work | Model / effort |
+| ---- | -------------- |
+| Issues, PR text, docs, changelogs | Sonnet 5 / medium |
+| Codebase search, mechanical refactors, test scaffolding | Sonnet 5 / low |
+| Planning, implementation, debugging, review | Opus 5 / high |
+| Never | Fable 5 |
+
+If the current model clearly doesn't fit, say so in one line and continue anyway.
+
+## Delegate read-heavy work
+
+Use a subagent (Sonnet 5, low effort) for anything that means reading a lot to
+answer a little — "find every call site of X", "which tests cover Y", sweeping
+for a naming convention. Return the answer, not the file dumps.
+
+## Conventions
+
+- [Language/framework versions, e.g. TypeScript strict, React 19, Tailwind v4]
+- [Directory layout worth knowing]
+- [Testing approach]
+- [Anything Claude reliably gets wrong here]
+
+## Don't
+
+- [Files/dirs never to edit — generated code, vendored deps, migrations]
+- Don't run `[destructive command]`
+- Don't commit or push unless I ask

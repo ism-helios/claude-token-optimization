@@ -1,0 +1,110 @@
+{
+  "generated": "2026-09-09T11:34:04+00:00",
+  "span_days": 73,
+  "window": [
+    "2026-06-28",
+    "2026-09-09"
+  ],
+  "turns": 93994,
+  "sessions": 280,
+  "total_usd_equiv": 30092.52,
+  "weekly_usd_equiv": 2885.58,
+  "components_pct": {
+    "cache_read": 65.4,
+    "cache_write": 24.3,
+    "output": 10.3,
+    "input": 0.0
+  },
+  "by_model": {
+    "claude-opus-5": {
+      "pct": 51.0,
+      "turns": 60367
+    },
+    "claude-fable-5": {
+      "pct": 36.5,
+      "turns": 20398
+    },
+    "claude-fable-5-1": {
+      "pct": 6.4,
+      "turns": 4932
+    },
+    "claude-opus-4-8": {
+      "pct": 6.1,
+      "turns": 7735
+    },
+    "claude-sonnet-5": {
+      "pct": 0.0,
+      "turns": 96
+    },
+    "claude-haiku-4-5-20251001": {
+      "pct": 0.0,
+      "turns": 416
+    },
+    "<synthetic>": {
+      "pct": 0.0,
+      "turns": 50
+    }
+  },
+  "context": {
+    "median": 300614,
+    "p90": 751320,
+    "max": 998273,
+    "pct_tokens_above_500k": 53.3
+  },
+  "session_buckets": {
+    "1-50": {
+      "sessions": 78,
+      "pct_of_cost": 0.7,
+      "usd_per_turn": 0.0988
+    },
+    "1000+": {
+      "sessions": 21,
+      "pct_of_cost": 55.5,
+      "usd_per_turn": 0.4046
+    },
+    "201-500": {
+      "sessions": 42,
+      "pct_of_cost": 7.2,
+      "usd_per_turn": 0.1616
+    },
+    "501-1000": {
+      "sessions": 37,
+      "pct_of_cost": 33.3,
+      "usd_per_turn": 0.3717
+    },
+    "51-200": {
+      "sessions": 102,
+      "pct_of_cost": 3.3,
+      "usd_per_turn": 0.0978
+    }
+  },
+  "marathon_pct": 55.5,
+  "tool_calls": {
+    "Bash": 35829,
+    "Edit": 5679,
+    "Read": 2699,
+    "Write": 2058,
+    "mcp__Claude_Browser__javascript_tool": 1292,
+    "mcp__Claude_Browser__computer": 1068,
+    "mcp__Claude_Browser__navigate": 702,
+    "TaskUpdate": 392,
+    "mcp__Claude_Browser__preview_start": 258,
+    "TaskCreate": 238,
+    "Agent": 223,
+    "WebFetch": 173,
+    "ToolSearch": 164,
+    "mcp__Claude_Code_iOS_Simulator__control": 154,
+    "WebSearch": 145
+  },
+  "tool_calls_total": 52809,
+  "tool_result_top1pct_share": 58.7,
+  "levers": {
+    "cap_500k": 10.1,
+    "cap_300k": 23.7,
+    "cap_200k": 34.3,
+    "cap_120k": 45.1,
+    "sonnet_40pct": 27.2,
+    "cap200k_plus_sonnet40": 52.4,
+    "cap120k_plus_sonnet50": 64.2
+  }
+}
