@@ -1,11 +1,14 @@
 # Claude Token Optimization
 
-Measured research into why a Claude Max 20x plan runs out of weekly allowance in
-four days, and the concrete policy that fixes it.
+Why a Claude Max plan can run out of weekly allowance in four days, what the
+cause measurably is, and how to generate a fix tailored to your own usage.
 
-Everything here comes from analyzing **93,994 real assistant turns across 280
-sessions** (28 Jun – 9 Sep 2026) from local Claude Code transcripts. No estimates,
-no vendor marketing — the counterfactuals are re-priced replays of actual history.
+The research is a case study: **93,994 real assistant turns across 280 sessions**
+(28 Jun – 9 Sep 2026), parsed from local Claude Code transcripts. No estimates,
+no vendor marketing — every counterfactual is a re-priced replay of actual
+history. The mechanism generalizes; the specific numbers won't be yours, which is
+why the [instructions are generated from your own data](#automating-it--generate-instructions-from-your-usage)
+rather than copied.
 
 ---
 
@@ -57,25 +60,38 @@ docs/01-findings.md        Full research data and methodology
 docs/02-cost-model.md      How metering works; pricing; why cache reads dominate
 docs/03-playbook.md        The habits, ranked by measured savings
 docs/04-model-routing.md   Which model for which phase of work
-instructions/              Copy-paste automation (see below)
+instructions/              Generator prompt + templates (see below)
 tools/analyze_usage.py     Re-measurable analyzer — run it yourself
 data/                      Baseline snapshots for before/after comparison
 ```
 
-## Automating it
+## Automating it — generate instructions from *your* usage
 
-Two drop-in files so the policy applies without remembering it:
+Token waste has a shape, and yours won't match the profile above. Someone
+burning 1M-token marathon sessions needs different rules from someone running
+hundreds of small sessions on an overpriced model. So rather than copying a
+fixed instruction block, generate your own:
 
-- **[`instructions/claude-user-instructions.md`](instructions/claude-user-instructions.md)**
-  — paste into Claude's **Settings → Instructions for Claude**. Applies across
-  every chat and Cowork session on the account.
-- **[`instructions/CLAUDE.md.template`](instructions/CLAUDE.md.template)** —
-  copy into any repo as `CLAUDE.md`. Encodes output-trimming and session-hygiene
-  rules that Claude Code reads automatically.
+> **[instructions/GENERATE-MY-INSTRUCTIONS.md](instructions/GENERATE-MY-INSTRUCTIONS.md)**
+> — a prompt you paste into Claude Code. It measures your transcripts, diagnoses
+> which of eight token problems you actually have, and writes a paste-ready
+> block containing **only** the rules your numbers justify. Drop the result into
+> **Settings → Instructions for Claude**.
 
-> **The one trap to know:** changing model or effort *mid-conversation* invalidates
-> the prompt cache and re-bills the entire context at full write price. Model
-> routing must be **per session**, not per turn. See
+Also in [`instructions/`](instructions/):
+
+- [`CLAUDE.md.template`](instructions/CLAUDE.md.template) — copy into any repo as
+  `CLAUDE.md` for project-specific trimmed commands and conventions.
+- [`claude-user-instructions.md`](instructions/claude-user-instructions.md) —
+  generic baseline template if you can't run the analyzer.
+- [`examples/heavy-opus-marathon-user.md`](instructions/examples/heavy-opus-marathon-user.md)
+  — the generator prompt run end-to-end on the 93,994-turn profile above.
+
+> **Two constraints every template here encodes.** Claude cannot change its own
+> model or effort — those are your controls, so instructions can only make it
+> *flag* a mismatch. And changing model or effort *mid-conversation* invalidates
+> the prompt cache, re-billing the whole context at ~12.5× the read rate — so
+> routing is **per session**, never per turn. See
 > [docs/04-model-routing.md](docs/04-model-routing.md).
 
 ## Measuring your own usage
