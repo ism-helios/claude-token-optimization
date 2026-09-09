@@ -179,6 +179,38 @@ Consumption grew ~60× in ten weeks. The 24 Aug trough is consistent with a
 limit being hit. Peak weeks cluster around $6,500 — roughly 140× the plan's
 weekly face value.
 
+## 7. Current trajectory is worse than the average
+
+Re-running the analyzer over just the trailing 7 days (2–9 Sep) against the
+73-day baseline:
+
+| Metric | 73-day baseline | Last 7 days |
+| ------ | --------------- | ----------- |
+| Weekly burn | $2,886 | **$6,945** |
+| Median context per request | 300,614 | **355,000** |
+| % of tokens above 500K context | 53.3% | 57.4% |
+| Cost share of 1000+ turn sessions | 55.5% | 31.1% |
+| Fable 5 share | 36.5% | 25.9% |
+| Fable 5.1 share | 6.4% | 27.8% |
+| Sonnet + Haiku share | ~0.0% | ~0.0% |
+
+Two things stand out:
+
+- **The recent rate is ~2.4× the period average**, and median context is *higher*
+  than baseline. This is why limits are being hit now specifically — the average
+  understates the current problem, so the projected savings in
+  [03-playbook.md](03-playbook.md) are if anything conservative.
+- **Fable 5 → 5.1 migration is already partly underway** (6.4% → 27.8%), which is
+  the right direction. But Fable 5 is still a quarter of consumption, and
+  Sonnet/Haiku remain at effectively zero. The two biggest levers are still
+  untouched.
+
+Reproduce with:
+
+```bash
+python3 tools/analyze_usage.py --days 7 --compare data/baseline-2026-09-09.json
+```
+
 ## Conclusion
 
 The plan is not undersized for the work. The work is being delivered in a shape
